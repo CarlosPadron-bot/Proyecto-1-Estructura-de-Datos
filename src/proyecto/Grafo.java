@@ -151,6 +151,56 @@ public class Grafo {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
     
+    //***********************************************
     
+    /**
+     * Realiza una búsqueda en profundidad (DFS) desde un nodo inicial
+     * @param inicio El nombre del nodo inicial
+     * @return Lista de nodos visitados en orden DFS
+     */
+    
+    public List<String> dfs(String inicio) {
+        List<String> visitados = new ArrayList<>();
+        Set<String> visitadosSet = new HashSet<>();
+        if (!usuarios.containsKey(inicio)) return visitados;
+        dfsRecursivo(inicio, visitadosSet, visitados);
+        return visitados;
+    }
+    
+    private void dfsRecursivo(String nodo, Set<String> visitadoSet, List<String> visitados) {
+        visitadoSet.add(nodo);
+        visitados.add(nodo);
+        for (String vecino : adyacencias.get(nodo)) {
+            if(!visitadoSet.contains(vecino)) {
+                dfsRecursivo(vecino,visitadoSet, visitados);
+            }
+        }
+    }
+    
+    /**
+     * Realiza una búsqueda en anchura (BFS) desde un nodo inicial
+     * @param inicio El nombre del nodo inicial
+     * @return Lista de nodos visitados en orden BFS
+     */
+    
+    public List<String> bfs(String inicio) {
+        List<String> visitados = new ArrayList<>();
+        Set<String> visitadoSet = new HashSet<>();
+        Queue<String> cola = new LinkedList<>();
+            if (!usuarios.containsKey(inicio)) return visitados;
+            cola.add(inicio);
+            visitadoSet.add(inicio);
+            while (!cola.isEmpty()) {
+                String actual = cola.poll();
+                visitados.add(actual);
+                for (String vecino : adyacencias.get(actual)) {
+                    if (!visitadoSet.contains(vecino)) {
+                        visitadoSet.add(vecino);
+                        cola.add(vecino);
+                    }
+                }
+            }
+            return visitados;
+    }
     
 }
