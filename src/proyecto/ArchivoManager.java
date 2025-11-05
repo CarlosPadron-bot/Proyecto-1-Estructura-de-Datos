@@ -10,7 +10,7 @@ package proyecto;
 /**
  * Implemento de JFileChooser para el archivo txt
  * @author Kelvin Hurtado
- * @version: 31/11/25
+ * @version: 04/11/25
  */
 
 import javax.swing.JFileChooser;
@@ -18,6 +18,8 @@ import java.io.File;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Map;
+import java.util.HashMap;
 
 public class ArchivoManager {
     private JFileChooser fileChooser;
@@ -37,11 +39,46 @@ public String cargarArchivoConJFileChooser() {
 
 // ---> Con esto se puede acceder a leer el archivo seleccionado
 
-public void leerArchivo(String rutaArchivo) {
+public void leerArchivo(String rutaArchivo, Grafo grafo) {
     try (BufferedReader br = new BufferedReader(new FileReader(rutaArchivo))) {
         String linea;
+        boolean leyendoUsuarios = false;
+        boolean leyendoRelaciones = false;
+        Map<String, Usuario> mapaUsuarios = new HashMap<>();  // Encontrar usuarios por nombre
+        
         while ((linea = br.readLine()) != null) {
+            linea=linea.trim();
             // Procesa cada línea (usuarios o relaciones)
+            
+            if (linea.equalsIgnoreCase("usuarios")) {
+                leyendoUsuarios = true;
+                leyendoRelaciones = false;
+                continue;
+            } else if (linea.equalsIgnoreCase("relaciones")) {
+                leyendoRelaciones = true;
+                leyendoUsuarios = false;
+                continue;
+            }
+
+            if (leyendoUsuarios && !linea.isEmpty()) {
+                Usuario usuario = new Usuario(linea);
+                grafo.agregarUsuario(usuario);
+                mapaUsuarios.put(linea, usuario);
+            }
+
+            if (leyendoRelaciones && !linea.isEmpty()) {
+                String[] partes = linea.split(",");
+                if (partes.length == 2) {
+                    Usuario origen = mapaUsuarios.get(partes[0].trim());
+                    Usuario destino = mapaUsuarios.get(partes[1].trim());
+                    if (origen != null && destino != null) {
+                        mapa.agregarRelacion(origen, destino);
+                    }else {
+                    
+                        System.out.println("No se ha encontrado ningún usuario para la relación: ");
+                    }
+                }
+            }
         }
     } catch (IOException e) {
         e.printStackTrace();
