@@ -16,13 +16,24 @@ package proyecto;
 import javax.swing.JFileChooser;
 import java.io.File;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Map;
 import java.util.HashMap;
 
-public class ArchivoManager {
-    private JFileChooser fileChooser;
+
+public class ArchivoManager {                       // Para seleccionar el archivo con JFileChooser
+    public String seleccionarArchivo() {
+        JFileChooser fileChooser = new JFileChooser();
+        int resultado = fileChooser.showOpenDialog(null);
+        if (resultado == JFileChooser.APPROVE_OPTION) {
+            File archivo = fileChooser.getSelectedFile();
+            return archivo.getAbsolutePath();
+        }
+        return null;
+    }
    
 // ---> Aquí estoy creando el método para abrir el archivo
     
@@ -120,14 +131,25 @@ public void cargarArchivo() {
         // Para Manejar si hay error, ("Error al cargar archivo");
     }
 }
-  
 
+public void guardarGrafoEnArchivo(Grafo grafo, String rutaArchivo) {
+    try (BufferedWriter bw = new BufferedWriter(new FileWriter(rutaArchivo))) {
+        bw.write("usuarios\n");
+        for (String usuario : grafo.listarUsuarios()) {
+            bw.write(usuario + "\n");
+        }
+        bw.write("relaciones\n");
+        for (String origen : grafo.listarUsuarios()) {
+            for (String destino : grafo.getAdyacencias().get(origen)) {
+                bw.write(origen + ", " + destino + "\n");
+            }
+        }
+        grafo.marcarCambios(false); // Limpiar cambios pendientes
+    } catch (IOException e) {
+        e.printStackTrace();
     }
-
-
-
-
+}
 
     
+}
     
-

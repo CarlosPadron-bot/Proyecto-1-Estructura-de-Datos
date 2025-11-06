@@ -110,5 +110,9 @@ public class Usuario {
     public int hasCode(){
         return Objects.hash(nombre);
     } 
+
+    Object trim() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
     
 }

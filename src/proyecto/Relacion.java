@@ -16,6 +16,8 @@ public class Relacion {
         this.origen = origen;
         this.destino = destino;
     }
+    
+    
 
     /** Getter Origen
      * @return the origen
@@ -45,8 +47,8 @@ public class Relacion {
         this.destino = destino;
     }
     
-    
-    
+ 
+      
     @Override
     public boolean equals(Object obj) {            // Equals para comparar por origen y destino
         if (this == obj) return true;

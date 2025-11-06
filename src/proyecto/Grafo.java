@@ -15,8 +15,8 @@ import java.util.*;
  */
 public class Grafo {
 
-    private HashMap<String, Usuario> usuarios; //Mapa de nombre a Usuario
-    private HashMap<String, ArrayList<String>> adyacencias; //Mapa de nombre a lista de seguidos
+    public HashMap<String, Usuario> usuarios; //Mapa de nombre a Usuario
+    public HashMap<String, ArrayList<String>> adyacencias; //Mapa de nombre a lista de seguidos
     private boolean cambiosPendientes; // Para cualquier alerta de guardado
     private int contadorId; // Asigna Id únicos a los usuarios
 
@@ -35,8 +35,8 @@ public class Grafo {
     public boolean agregarUsuario(String nombre) {
         if (!usuarios.containsKey(nombre)) {
             Usuario nuevoUsuario = new Usuario(nombre, contadorId++);
-            usuarios.put(nombre, nuevoUsuario);
-            adyacencias.put(nombre, new ArrayList<>());
+            getUsuarios().put(nombre, nuevoUsuario);
+            getAdyacencias().put(nombre, new ArrayList<>());
             cambiosPendientes = true;
             return true;
         }
@@ -51,9 +51,9 @@ public class Grafo {
      */
     
     public boolean agregarRelacion(String origen, String destino) {
-        if (usuarios.containsKey(origen) && usuarios.containsKey(destino)) {
-            ArrayList<String> lista = adyacencias.get(origen);
-            if (usuarios.containsKey(destino)) {
+        if (getUsuarios().containsKey(origen) && getUsuarios().containsKey(destino)) {
+            ArrayList<String> lista = getAdyacencias().get(origen);
+            if (getUsuarios().containsKey(destino)) {
                 lista.add(destino);
                 cambiosPendientes = true;
                 return true;
@@ -68,7 +68,7 @@ public class Grafo {
      * @return true si existe y false en caso contrario
      */
     public boolean existeUsuario(String nombre) {
-        return usuarios.containsKey(nombre);
+        return getUsuarios().containsKey(nombre);
     }
     
     /** Aqui se puede obtener el grado de salida de un usuario
@@ -78,8 +78,8 @@ public class Grafo {
      */
     
     public int ObtenerGradoSalida(String nombre) {
-        if (adyacencias.containsKey(nombre)) {
-            return adyacencias.get(nombre).size();
+        if (getAdyacencias().containsKey(nombre)) {
+            return getAdyacencias().get(nombre).size();
         }
         return -1;
     }
@@ -94,7 +94,7 @@ public class Grafo {
      public int obtenerGradoEntrada(String nombre) {
         if (!usuarios.containsKey(nombre)) return -1;
         int grado = 0;
-        for (ArrayList<String> lista : adyacencias.values()) {
+        for (ArrayList<String> lista : getAdyacencias().values()) {
             if (lista.contains(nombre)) {
                 grado++;
             }
@@ -108,7 +108,7 @@ public class Grafo {
       */
      
     public List<String> listarUsuarios() {
-        return new ArrayList<>(usuarios.keySet());
+        return new ArrayList<>(getUsuarios().keySet());
     }
     
     /**
@@ -137,11 +137,11 @@ public class Grafo {
      public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("Usuarios:\n");
-        for (Usuario u : usuarios.values()) {
+        for (Usuario u : getUsuarios().values()) {
             sb.append(u.toString()).append("\n");
         }
         sb.append("Relaciones:\n");
-        for (Map.Entry<String, ArrayList<String>> entry : adyacencias.entrySet()) {
+        for (Map.Entry<String, ArrayList<String>> entry : getAdyacencias().entrySet()) {
             sb.append(entry.getKey()).append(" -> ").append(entry.getValue()).append("\n");
         }
         return sb.toString();
@@ -170,7 +170,7 @@ public class Grafo {
     private void dfsRecursivo(String nodo, Set<String> visitadoSet, List<String> visitados) {
         visitadoSet.add(nodo);
         visitados.add(nodo);
-        for (String vecino : adyacencias.get(nodo)) {
+        for (String vecino : getAdyacencias().get(nodo)) {
             if(!visitadoSet.contains(vecino)) {
                 dfsRecursivo(vecino,visitadoSet, visitados);
             }
@@ -193,7 +193,7 @@ public class Grafo {
             while (!cola.isEmpty()) {
                 String actual = cola.poll();
                 visitados.add(actual);
-                for (String vecino : adyacencias.get(actual)) {
+                for (String vecino : getAdyacencias().get(actual)) {
                     if (!visitadoSet.contains(vecino)) {
                         visitadoSet.add(vecino);
                         cola.add(vecino);
@@ -202,5 +202,21 @@ public class Grafo {
             }
             return visitados;
     }
+
+    /**
+     * @return the usuarios
+     */
+    public HashMap<String, Usuario> getUsuarios() {
+        return usuarios;
+    }
+
+    /**
+     * @return the adyacencias
+     */
+    public HashMap<String, ArrayList<String>> getAdyacencias() {
+        return adyacencias;
+    }
+
+ 
     
 }
